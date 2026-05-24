@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Byte-Force Home</title>
+
+    <link rel="stylesheet" href="style/normalize.css">
+    <link rel="stylesheet" href="style/hackathon.css">
+
+    <script src="translation.js"></script>
+    
+</head>
+
+<body>
+
+<div id="Container">
+
+    <!-- HEADER -->
+   <header class="main-header" style="position: relative; padding-bottom: 25px;">
+    
+    <div class="logo-section">
+        <a href="Home.html">
+            <img src="images/KasiPayLogo.jpg" alt="KasiPay Logo" class="site-logo">
+        </a>
+        <h1>KasiPay</h1>
+    </div>
+
+    <div style="position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; font-style: italic; font-size: 13.5px; color: rgba(255, 255, 255, 0.85); font-weight: 400; letter-spacing: 0.3px; pointer-events: none;">
+        Empowering Kasi Businesses, One Transaction at a Time.
+    </div>
+
+<button onclick="window.location.href='Loginpage.html'" onmouseenter="this.style.backgroundColor='#ef4444'; this.style.color='#ffffff';" onmouseleave="this.style.backgroundColor='#ffffff'; this.style.color='#000000';" style="position: absolute; top: 20px; right: 20px; background: #ffffff; color: #000000; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 14px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: background-color 0.2s ease, color 0.2s ease;" data-i18n="nav_signout">Sign Out</button>    </header>
+
+</header>
+
+    <!-- NAV -->
+   <!-- MOBILE MENU BUTTON -->
+
+<div class="menu-toggle" onclick="toggleMenu()">
+
+    ☰
+
+</div>
+
+<!-- NAVIGATION -->
+
+<nav id="navbar">
+
+   <nav id="navbar">
+    <p>
+        <a href="Home.html" data-i18n="nav_home" class="current">Home</a>
+        <a href="Dashboard.html" data-i18n="nav_dashboard">Dashboard</a>
+        <a href="Receipts.html" data-i18n="nav_receipts">Receipts</a>
+        <a href="Inventory.html" data-i18n="nav_inventory">Inventory</a>
+         <a href="Diagnostic.html">Diagnostics</a>
+    </p>
+</nav>
+
+</nav>
+
+    <!-- HERO -->
+    <main>
+
+        <section class="hero">
+
+            <h1>
+                Bridging the Informal Economy
+            </h1>
+
+            <p>
+
+                KasiPay helps spaza shops and informal
+                businesses track sales, manage stock,
+                and build a digital financial identity
+                without expensive apps or high data use.
+
+            </p>
+
+            <div class="buttons">
+
+                <button 
+                    class="primary-btn"
+                    onclick="goDashboard()"
+                >
+                    Get Started
+                </button>
+
+                <button class="secondary-btn">
+                    Learn More
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- FEATURES -->
+        <section class="features">
+
+            <div class="feature-card">
+
+                <h3>Smart Inventory</h3>
+
+                <p>
+                    Automatically track stock
+                    as items are sold.
+                </p>
+
+            </div>
+
+            <div class="feature-card">
+
+                <h3>Easy Payment</h3>
+
+                <p>
+                    QR Codes and USSD payments
+                    for modern transactions.
+                </p>
+
+            </div>
+
+            <div class="feature-card">
+
+                <h3>Reliability Score</h3>
+
+                <p>
+                    Build a business profile
+                    banks can trust.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+
+        <p>
+            &copy; 2026 KasiPay by Byte Force
+        </p>
+
+    </footer>
+
+</div>
+
+<script>
+
+    function goDashboard(){
+
+        window.location.href = "Dashboard.html";
+    }
+
+</script>
+<script>
+
+    function toggleMenu(){
+
+        document
+            .getElementById("navbar")
+            .classList
+            .toggle("show-nav");
+    }
+
+</script>
+</body>
+
+</html>

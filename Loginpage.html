@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>KasiPay Login</title>
+
+    <link rel="stylesheet" href="style/normalize.css">
+    <link rel="stylesheet" href="style/hackathon.css">
+    
+    <script src="translations.js"></script>
+
+</head>
+
+<body>
+
+    <div id="Container">
+
+        <header class="main-header">
+
+            <div class="logo-section">
+
+                <img 
+                    src="images/KasiPayLogo.jpg"
+                    alt="KasiPay Logo"
+                    class="site-logo"
+                >
+
+                <h1>KasiPay</h1>
+
+            </div>
+
+        </header>
+
+        <main class="login-main">
+
+            <div class="login-card">
+
+                <h2 data-i18n="owner_login">Owner Login</h2>
+
+                <div class="input-group">
+
+                    <label data-i18n="username_label">Username</label>
+
+                    <input 
+                        type="text"
+                        id="username"
+                        placeholder="Enter username"
+                        data-i18n-placeholder="placeholder_username"
+                    >
+
+                </div>
+
+                <div class="input-group">
+
+                    <label data-i18n="password_label">Password</label>
+
+                    <input 
+                        type="password"
+                        id="password"
+                        placeholder="Enter password"
+                        data-i18n-placeholder="placeholder_password"
+                        onkeydown="if(event.key === 'Enter') login()"
+                    >
+
+                </div>
+
+                <button 
+                    class="login-btn"
+                    onclick="login()"
+                    data-i18n="login_btn"
+                >
+                    Login
+                </button>
+
+                <div class="extra-links">
+
+                    <p>
+                        <a href="#" data-i18n="forgot_password">
+                            Forgot Password?
+                        </a>
+                    </p>
+
+                </div>
+
+                <div class="language">
+
+                    <select id="languageSelect" onchange="changeLanguage()">
+
+                        <option value="en">English</option>
+                        <option value="zu">isiZulu</option>
+                        <option value="st">Sesotho</option>
+                        <option value="af">Afrikaans</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+<script>
+
+    function login(){
+
+        let username =
+            document.getElementById("username").value;
+
+        let password =
+            document.getElementById("password").value;
+
+        // LOGIN DETAILS
+        if(
+            username === "admin"
+            &&
+            password === "1234"
+        ){
+
+            window.location.href = "Home.html";
+
+        }else{
+            // Leverages system alerts seamlessly
+            alert(getTranslation("incorrect_alert"));
+        }
+    }
+
+</script>
+
+</body>
+</html>

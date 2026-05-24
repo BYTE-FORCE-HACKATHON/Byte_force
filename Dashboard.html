@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Byte-Force Dashboard</title>
+    <link rel="stylesheet" href="style/normalize.css">
+    <link rel="stylesheet" href="style/hackathon.css">
+</head>
+<body>
+
+<div id="Container">
+
+   <header class="main-header" style="position: relative; padding-bottom: 25px;">
+    
+    <div class="logo-section">
+        <a href="Home.html">
+            <img src="images/KasiPayLogo.jpg" alt="KasiPay Logo" class="site-logo">
+        </a>
+        <h1>KasiPay</h1>
+    </div>
+
+    <div style="position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; font-style: italic; font-size: 13.5px; color: rgba(255, 255, 255, 0.85); font-weight: 400; letter-spacing: 0.3px; pointer-events: none;">
+        Empowering Kasi Businesses, One Transaction at a Time.
+    </div>
+
+<button onclick="window.location.href='Loginpage.html'" onmouseenter="this.style.backgroundColor='#ef4444'; this.style.color='#ffffff';" onmouseleave="this.style.backgroundColor='#ffffff'; this.style.color='#000000';" style="position: absolute; top: 20px; right: 20px; background: #ffffff; color: #000000; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 14px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: background-color 0.2s ease, color 0.2s ease;" data-i18n="nav_signout">Sign Out</button>    </header>
+
+</header>
+    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+    <nav id="navbar">
+        <p>
+            <nav id="navbar">
+    <p>
+        <a href="Home.html" data-i18n="nav_home">Home</a>
+        <a href="Dashboard.html" data-i18n="nav_dashboard" class="current">Dashboard</a>
+        <a href="Receipts.html" data-i18n="nav_receipts">Receipts</a>
+        <a href="Inventory.html" data-i18n="nav_inventory">Inventory</a>
+        
+            <a href="Diagnostic.html">Diagnostics</a>
+    </p>
+</nav>
+        </p>
+    </nav>
+
+    <main>
+        <h2>Search Products</h2>
+        <div class="container">
+            <div class="products-panel">
+                <h2>Products</h2>
+                <input type="text" id="searchBar" placeholder="Search products..." onkeyup="searchProducts()">
+                <div id="productList"></div>
+            </div>
+
+            <div class="cart-panel">
+                <div class="customer-ref" id="customerRef"></div>
+                <h2>Cart</h2>
+                <div id="cartItems"></div>
+                <div class="total" id="totalPrice">Total: R0</div>
+
+                <select id="paymentMethod" class="payment-dropdown">
+                    <option value="">Select Payment Method</option>
+                    <option value="cash">Pay Cash</option>
+                    <option value="qr">QR Code Payment</option>
+                    <option value="ussd">USSD Payment</option>
+                    <option value="card">Card Payment</option>
+                </select>
+
+                <button class="qr-btn" onclick="processPayment()">Confirm Payment</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Created by: <a href=""></a></p>
+        <p>&copy; 2026 KasiPay by Byte Force</p>
+    </footer>
+
+</div>
+
+<div class="popup" id="popup">
+    <div class="popup-content">
+        <h2 id="popupTitle">Payment</h2>
+        <p id="popupMessage"></p>
+        <img src="images/qr.png" id="qrImage" class="qr-image" alt="QR Code">
+        <img src="images/payment_successful.jfif" id="approvedImage" alt="Payment Approved" style="display: none; max-width: 150px; margin: 15px auto;">
+        <p id="popupTotal" style="font-size: 20px; font-weight: bold; margin: 10px 0; color: #111827;"></p>
+        <button id="doneButton" onclick="closePopup()">Done</button>
+    </div>
+</div>
+
+<script>
+    let products = JSON.parse(localStorage.getItem("inventory"));
+
+    if(!products){
+        products = [
+            { name:"Tomato", price:15, stock:5 },
+            { name:"Tea", price:45, stock:10 },
+            { name:"Toothpaste", price:30, stock:4 },
+            { name:"Towel", price:120, stock:3 },
+            { name:"Apple", price:12, stock:8 },
+            { name:"Bread", price:18, stock:5 },
+            { name:"Milk", price:25, stock:6 }
+        ];
+        localStorage.setItem("inventory", JSON.stringify(products));
+    }
+
+    let cart = [];
+
+    function generateCustomerRef(){
+        let randomNum = Math.floor(Math.random() * 900000) + 100000;
+        document.getElementById("customerRef").innerHTML = "Customer Ref: CUST" + randomNum;
+    }
+    generateCustomerRef();
+
+    function displayProducts(filteredProducts){
+        const productList = document.getElementById("productList");
+        productList.innerHTML = "";
+        filteredProducts.forEach(product => {
+            productList.innerHTML += `
+                <div class="product">
+                    <div class="product-info">
+                        <strong>${product.name}</strong>
+                        <span class="price">R${product.price}</span>
+                        <small>Stock Left: ${product.stock}</small>
+                    </div>
+                    <button class="add-btn" onclick="addToCart('${product.name}')">Add</button>
+                </div>
+            `;
+        });
+    }
+    displayProducts(products);
+
+    function searchProducts(){
+        let input = document.getElementById("searchBar").value.toLowerCase();
+        let filtered = products.filter(product => product.name.toLowerCase().startsWith(input));
+        displayProducts(filtered);
+    }
+
+    function addToCart(productName){
+        let product = products.find(p => p.name === productName);
+        let existing = cart.find(item => item.name === productName);
+
+        if(product.stock <= 0){
+            alert("Cannot add more " + product.name + ". Stock limit reached.");
+            return;
+        }
+
+        product.stock--;
+        localStorage.setItem("inventory", JSON.stringify(products));
+
+        if(existing){
+            existing.quantity++;
+        } else {
+            cart.push({ name:product.name, price:product.price, quantity:1 });
+        }
+        updateCart();
+        displayProducts(products);
+    }
+
+    function updateCart(){
+        const cartItems = document.getElementById("cartItems");
+        cartItems.innerHTML = "";
+        let total = 0;
+        cart.forEach(item => {
+            total += item.price * item.quantity;
+            cartItems.innerHTML += `
+                <div class="cart-item">
+                    <div><strong>${item.name}</strong><br>R${item.price}</div>
+                    <div class="qty-controls">
+                        <button class="qty-btn" onclick="decreaseQty('${item.name}')">-</button>
+                        <span>${item.quantity}</span>
+                        <button class="qty-btn" onclick="increaseQty('${item.name}')">+</button>
+                    </div>
+                </div>
+            `;
+        });
+        document.getElementById("totalPrice").innerHTML = "Total: R" + total;
+    }
+
+    function increaseQty(productName){
+        let product = products.find(p => p.name === productName);
+        if(product.stock <= 0){
+            alert("Cannot add more stock.");
+            return;
+        }
+        let item = cart.find(i => i.name === productName);
+        item.quantity++;
+        product.stock--;
+        localStorage.setItem("inventory", JSON.stringify(products));
+        updateCart();
+        displayProducts(products);
+    }
+
+    function decreaseQty(productName){
+        let item = cart.find(i => i.name === productName);
+        let product = products.find(p => p.name === productName);
+        item.quantity--;
+        product.stock++;
+        localStorage.setItem("inventory", JSON.stringify(products));
+        if(item.quantity <= 0){
+            cart = cart.filter(i => i.name !== productName);
+        }
+        updateCart();
+        displayProducts(products);
+    }
+
+    function processPayment(){
+
+        if(cart.length === 0){
+            alert("Your cart is empty. Please add items before checking out.");
+            return;
+        }
+        let payment = document.getElementById("paymentMethod").value;
+        let popup = document.getElementById("popup");
+        let popupTitle = document.getElementById("popupTitle");
+        let popupMessage = document.getElementById("popupMessage");
+        let qrImage = document.getElementById("qrImage");
+        let approvedImage = document.getElementById("approvedImage");
+        let popupTotal = document.getElementById("popupTotal");
+        let doneButton = document.getElementById("doneButton");
+
+        if(payment === ""){
+            alert("Select payment method.");
+            return;
+        }
+
+        let total = 0;
+        cart.forEach(item => { total += item.price * item.quantity; });
+
+        const receiptData = {
+            customerRef: document.getElementById("customerRef").innerText,
+            paymentMethod: payment,
+            items: cart,
+            totalAmount: total,
+            date: new Date().toLocaleString()
+        };
+        localStorage.setItem("receiptData", JSON.stringify(receiptData));
+
+        // PUSH DATA LIVE TO THE DIAGNOSTICS LEDGER HISTORICAL MATRIX BEFORE SHUTTING DOWN OVERLAY
+        let ledgerHistory = JSON.parse(localStorage.getItem("kasipay_ledger")) || [];
+        ledgerHistory.push({
+            ref: receiptData.customerRef.replace("Customer Ref: ", ""),
+            value: total,
+            time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+        });
+        localStorage.setItem("kasipay_ledger", JSON.stringify(ledgerHistory));
+
+        popupTotal.innerHTML = "Total Amount: R" + total;
+        approvedImage.style.display = "none";
+        qrImage.style.display = "none";
+        doneButton.style.display = "inline-block";
+        popup.style.display = "flex";
+
+        if(payment === "qr"){
+            popupTitle.innerHTML = "QR Payment";
+            popupMessage.innerHTML = "Scan QR Code to pay.";
+            qrImage.style.display = "block";
+            doneButton.style.display = "none";
+
+            setTimeout(() => {
+                qrImage.style.display = "none";
+                popupTitle.innerHTML = "Verifying Transaction";
+                popupMessage.innerHTML = "Processing settlement validation checks...";
+            }, 4000);
+
+            setTimeout(() => {
+                approvedImage.style.display = "block";
+                popupTitle.innerHTML = "Payment Successful";
+                popupMessage.innerHTML = "Transaction certified successfully!";
+            }, 6500);
+
+            setTimeout(() => {
+                doneButton.style.display = "inline-block";
+            }, 8000);
+        }
+        else if(payment === "cash"){
+            popupTitle.innerHTML = "Cash Payment";
+            popupMessage.innerHTML = "Cash payment confirmed.";
+        }
+        else if(payment === "ussd"){
+            popupTitle.innerHTML = "USSD Payment";
+            popupMessage.innerHTML = "Waiting for USSD confirmation.";
+        }
+        else if(payment === "card"){
+            popupTitle.innerHTML = "Card Payment";
+            popupMessage.innerHTML = "Waiting for card payment.";
+        }
+    }
+
+    function closePopup(){
+        document.getElementById("popup").style.display = "none";
+        alert("Transaction Successful");
+        cart = [];
+        updateCart();
+        window.location.href = "Receipts.html";
+    }
+
+    function toggleMenu(){
+        document.getElementById("navbar").classList.toggle("show-nav");
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Byte-Force Receipts</title>
+
+    <link rel="stylesheet" href="style/normalize.css">
+    <link rel="stylesheet" href="style/hackathon.css">
+
+</head>
+
+<body>
+
+<div id="Container">
+
+    <!-- HEADER -->
+
+   <header class="main-header" style="position: relative; padding-bottom: 25px;">
+    
+    <div class="logo-section">
+        <a href="Home.html">
+            <img src="images/KasiPayLogo.jpg" alt="KasiPay Logo" class="site-logo">
+        </a>
+        <h1>KasiPay</h1>
+    </div>
+
+    <div style="position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; font-style: italic; font-size: 13.5px; color: rgba(255, 255, 255, 0.85); font-weight: 400; letter-spacing: 0.3px; pointer-events: none;">
+        Empowering Kasi Businesses, One Transaction at a Time.
+    </div>
+
+<button onclick="window.location.href='Loginpage.html'" onmouseenter="this.style.backgroundColor='#ef4444'; this.style.color='#ffffff';" onmouseleave="this.style.backgroundColor='#ffffff'; this.style.color='#000000';" style="position: absolute; top: 20px; right: 20px; background: #ffffff; color: #000000; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 14px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: background-color 0.2s ease, color 0.2s ease;" data-i18n="nav_signout">Sign Out</button>    </header>
+
+</header>
+
+
+    <!-- MOBILE MENU BUTTON -->
+
+    <div class="menu-toggle" onclick="toggleMenu()">
+
+        ☰
+
+    </div>
+
+    <!-- NAVIGATION -->
+
+    <nav id="navbar">
+
+        <p>
+
+            <a href="Home.html">Home</a>
+
+            <a href="Dashboard.html">Dashboard</a>
+
+            <a href="Receipts.html" class="current">Receipts</a>
+
+            <a href="Inventory.html">Inventory</a>
+
+               <a href="Diagnostic.html">Diagnostics</a>
+
+        </p>
+
+    </nav>
+
+    <!-- MAIN -->
+
+    <main>
+
+        <div class="receipt-container">
+
+            <div class="receipt-header">
+
+                <h2>Receipt Summary</h2>
+
+                <p>
+                    Thank you for shopping with KasiPay
+                </p>
+
+            </div>
+
+            <div id="receiptContent"></div>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            Created by:
+            <a href="">
+                <!-- group -->
+            </a>
+        </p>
+
+        <p>
+            &copy; 2026 KasiPay by Byte Force
+        </p>
+
+    </footer>
+
+</div>
+
+<!-- SCRIPT -->
+
+<script>
+
+    // GET RECEIPT DATA
+    const receipt =
+        JSON.parse(localStorage.getItem("receiptData"));
+
+    const receiptContent =
+        document.getElementById("receiptContent");
+
+    // IF DATA EXISTS
+    if(receipt){
+
+        let itemsHTML = "";
+
+        let totalItems = 0;
+
+        // LOOP THROUGH ITEMS
+        receipt.items.forEach(item => {
+
+            totalItems += item.quantity;
+
+            itemsHTML += `
+
+                <div class="receipt-item">
+
+                    <div>
+
+                        <strong>${item.name}</strong><br>
+
+                        Quantity: ${item.quantity}
+
+                    </div>
+
+                    <div>
+
+                        R${item.price * item.quantity}
+
+                    </div>
+
+                </div>
+
+            `;
+        });
+
+        // DISPLAY RECEIPT
+        receiptContent.innerHTML = `
+
+            <div class="receipt-info">
+
+                <p>
+                    <strong>
+                        ${receipt.customerRef}
+                    </strong>
+                </p>
+
+                <p>
+                    Date:
+                    ${receipt.date}
+                </p>
+
+                <p>
+                    Payment Method:
+                    ${receipt.paymentMethod.toUpperCase()}
+                </p>
+
+                <p>
+                    Total Items:
+                    ${totalItems}
+                </p>
+
+            </div>
+
+            <div class="receipt-items">
+
+                <h3>
+                    Purchased Items
+                </h3>
+
+                ${itemsHTML}
+
+            </div>
+
+            <div class="receipt-total">
+
+                Total Amount:
+                R${receipt.totalAmount}
+
+            </div>
+
+            <button
+                class="print-btn"
+                onclick="window.print()"
+            >
+
+                Print Receipt
+
+            </button>
+
+        `;
+    }
+
+    // IF NO DATA
+    else{
+
+        receiptContent.innerHTML = `
+
+            <div class="empty-message">
+
+                No receipt available.
+
+            </div>
+
+        `;
+    }
+
+</script>
+
+</body>
+</html>
